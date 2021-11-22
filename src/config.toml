@@ -1,0 +1,4 @@
+baseURL = "http://example.org/"
+languageCode = "fr-FR"
+title = "NC Connect - Documentation d'intégration"
+theme = "ace-documentation"

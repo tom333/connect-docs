@@ -1,7 +1,7 @@
 ---
 title: "Implémenter NC Connect sur son site"
 date: 2021-11-22T10:32:49+11:00
-draft: true
+draft: false
 ---
 
 Pour implémenter NC Connect sur votre site, vous devez d'abord procéder à une intégration sur la plateforme NC CONNECT de test.

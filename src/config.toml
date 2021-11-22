@@ -1,4 +1,5 @@
-baseURL = "https://tom333.github.io/connect-docs"
+baseURL = "https://tom333.github.io/connect-docs/"
 languageCode = "fr-FR"
 title = "NC Connect - Documentation d'intégration"
 theme = "ace-documentation"
+canonifyurls = true

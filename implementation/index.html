@@ -1,11 +1,10 @@
 <!doctype html><html><head>
-<meta name=generator content="Hugo 0.89.4">
 <meta charset=utf-8>
 <meta name=viewport content="width=device-width,initial-scale=1,shrink-to-fit=no">
-<link rel=alternate type=application/rss+xml href=https://tom333.github.io/connect-docs/index.xml title="NC Connect - Documentation d'intégration">
-<link rel=canonical href=https://tom333.github.io/connect-docs/>
+<link rel=alternate type=application/rss+xml href=https://tom333.github.io/connect-docs/implementation/index.xml title="NC Connect - Documentation d'intégration">
+<link rel=canonical href=https://tom333.github.io/connect-docs/implementation/>
 <title>
-| NC Connect - Documentation d'intégration
+Implémenter NC Connect sur son site | NC Connect - Documentation d'intégration
 </title>
 <link href=https://tom333.github.io/connect-docs/css/fontawesome.min.css rel=stylesheet>
 <link rel=stylesheet href=https://tom333.github.io/connect-docs/css/ace.min.css>
@@ -19,7 +18,7 @@ NC Connect - Documentation d'intégration
 </div>
 </div>
 <div class=feed-icons>
-<a href=https://tom333.github.io/connect-docs/index.xml><img src=https://tom333.github.io/connect-docs/img/feed-icon.svg alt="RSS feed"></a>
+<a href=https://tom333.github.io/connect-docs/implementation/index.xml><img src=https://tom333.github.io/connect-docs/img/feed-icon.svg alt="RSS feed"></a>
 </div>
 </nav>
 <div class=container-fluid>
@@ -53,7 +52,7 @@ Flux OpenID Connect
 </li>
 </ul>
 </li>
-<li data-nav-id=/implementation/ class="nav-item my-1 haschildren">
+<li data-nav-id=/implementation/ class="nav-item my-1 parent active haschildren">
 <a class="nav-link p-0" href=https://tom333.github.io/connect-docs/implementation/><h6>Implémenter NC Connect sur son site</h6></a>
 <ul class="list-unstyled ml-2">
 <li data-nav-id=/implementation/details_scopes/ class="nav-item my-1">
@@ -73,54 +72,56 @@ Detail des scopes
 <div class="docs-toc large order-lg-2 order-md-0 order-xs-1 col-12 col-lg-2 col-xl-2 position-sticky border-left"><div class=docs-toc>
 <nav id=TableOfContents>
 <ul>
-<li><a href=#1-pourquoi-nc-connect->1. Pourquoi NC Connect ?</a></li>
-<li><a href=#2-les-limites-actuelles-de-nc-connect>2. Les limites actuelles de NC Connect</a>
-<ul>
-<li><a href=#limite-technique>Limite technique</a></li>
-</ul>
-</li>
-<li><a href=#3-comment-ça-marche->3. Comment ça marche ?</a></li>
-<li><a href=#4-conditions-dutilisation>4. Conditions d&rsquo;utilisation</a></li>
+<li><a href=#demarche>DEMARCHE</a></li>
+<li><a href=#informations-techniques>INFORMATIONS TECHNIQUES</a></li>
+<li><a href=#contacts>CONTACTS</a></li>
 </ul>
 </nav>
 </div>
 </div>
 <div class="main col-12 order-1 col-md-9 col-lg-10 col-xl-8 py-3">
-<h1></h1>
-<h2 id=1-pourquoi-nc-connect->1. Pourquoi NC Connect ?</h2>
-<p>NC CONNECT simplifie l’accès aux services publics numériques. Il permet de s’authentifier sur les téléservices de Nouvelle-Calédonie sans avoir à créer de nouveaux comptes.</p>
-<p>Concrètement, NC CONNECT est un bouton qui s’affiche sur les interfaces des téléservices partenaires.</p>
-<p>En production depuis novembre 2018, il recouvre actuellement plus de 100 000 comptes actifs. Les premiers services utilisateurs sont ma-sante.gouv.nc et impots.nc.</p>
-<p>NC CONNECT a été conçu « pays » pour être utilisé par toutes les administrations en ajout ou remplacement des dispositifs d’authentification existants.</p>
-<p>Depuis 2021, NC CONNECT gère l&rsquo;identité des indidivus : nom, prénom, date de naissance, lieu de naissance et sexe.</p>
-<p>En proposant NC CONNECT :</p>
+<h1>Implémenter NC Connect sur son site</h1>
+<p>Pour implémenter NC Connect sur votre site, vous devez d&rsquo;abord procéder à une intégration sur la plateforme NC CONNECT de test.
+A cet effet, demandez une habilitation par email à l’adresse <a href=mailto:connect@gouv.nc>connect@gouv.nc</a> en indiquant les éléments suivants :</p>
+<h2 id=demarche>DEMARCHE</h2>
+<p><strong>Nom de l’organisme</strong></p>
+<p><strong>Description brève du service et de l’utilisation prévue</strong></p>
+<p>Exemples : « faire un POC », « se connecter au portail de ma ville »&mldr;</p>
+<h2 id=informations-techniques>INFORMATIONS TECHNIQUES</h2>
+<p><strong>Nom de l’application</strong></p>
+<p>Ex : impots.nc (affiché dans la mire de connexion en haut à gauche)</p>
+<p><strong>URL de l’application</strong></p>
+<p><a href=https://www.impots.nc>https://www.impots.nc</a></p>
+<p><strong>URL de redirection à la connexion</strong></p>
+<p>URL vers laquelle l’utilisateur sera redirigé après s’être connecté ou une liste d’URLs de redirection</p>
+<p>(Callback url: <a href=https://openid.net/specs/openid-connect-core-1_0.html#AuthResponse>https://openid.net/specs/openid-connect-core-1_0.html#AuthResponse</a>)</p>
+<p><strong>URL de redirection à la déconnexion</strong></p>
+<p>URL vers laquelle l’utilisateur sera redirigé quand il se déconnecte (par défaut, c’est l’url de l’application)</p>
+<p><strong>Liste des scopes dont l’application a besoin</strong></p>
+<p>Les scopes disponibles sont : &ldquo;openid&rdquo;, &ldquo;profile&rdquo;, &ldquo;email&rdquo;, &ldquo;birth&rdquo;, &ldquo;identite_pivot&rdquo;</p>
+<p><a href=https://tom333.github.io/connect-docs/implementation/details_scopes/>Détails ici </a></p>
+<p><strong>Le type d’authentification:</strong></p>
+<p>Nc Connect autorise les types suivants : Authorization code flow, Implicite code flow, Hybrid code flow et Code Flow + PKCE (OAuth 2.1)</p>
+<p><strong>Logo de l’application</strong></p>
+<p>Image affichée sur la mire de connexion NC CONNECT (hauteur disponible sur la page = 55px).</p>
+<h2 id=contacts>CONTACTS</h2>
+<p><strong>Nom et email du responsable de traitement</strong> (facultatif si la demande concerne un POC)</p>
+<p><a href=https://www.cnil.fr/fr/definition/responsable-de-traitement>https://www.cnil.fr/fr/definition/responsable-de-traitement</a></p>
+<p><strong>Nom et email du responsable technique</strong></p>
+<p>Cette personne recevra les accès techniques, il peut s’agir d’un prestataire. |</p>
+<p>Une fois la demande validée, les informations suivantes vous seront retournées :</p>
 <ul>
-<li>vous facilitez l&rsquo;accès à de nouveaux services en évitant la création d&rsquo;identifiant dédiés ;</li>
-<li>vous pouvez pré-saisir les informations d&rsquo;identité dans les formulaires administratifs ;</li>
-<li>vous offrez un dispositif sécurisé à vos utilisateurs.</li>
+<li>ClientID</li>
+<li>ClientSecret</li>
+<li>URL de redirection (pour rappel, fournie lors de la demande)</li>
+<li>La documentation d’intégration</li>
+<li>Le kit graphique NC CONNECT</li>
 </ul>
-<h2 id=2-les-limites-actuelles-de-nc-connect>2. Les limites actuelles de NC Connect</h2>
-<p>Limite fonctionnelle
-Dans le cas d&rsquo;un oubli de mot de passe au moment de la connexion, l&rsquo;usager n&rsquo;est pas renvoyé vers le téléservice appelant après la procédure. On parle de &ldquo;cul-de-sac&rdquo;. L&rsquo;usager doit lui-même retrouner sur le téléservice pour poursuivre.</p>
-<p>🗣Des évolutions sont prévues en 2021 pour supprimer cette limite.</p>
-<h3 id=limite-technique>Limite technique</h3>
-<p>Aucune limite constatée. En effet, les anciennes limites techniques liées à la compatibilité OpenIdConnect ont été réglées. NC Connect est compatible avec KeyCloak par exemple.</p>
-<h2 id=3-comment-ça-marche->3. Comment ça marche ?</h2>
-<p>Un utilisateur se connecte avec le bouton NC Connect ;
-NC Connect renvoie le sub (identifiant technique unique), le login et l&rsquo;adresse email de l’utilisateur ;
-Le fournisseur de service (FS) utilise les informations fournies pour reconnaître l’utilisateur dans son système.</p>
-<p>Votre service est-il éligible ?
-L&rsquo;accès à ce service n&rsquo;est pour l&rsquo;instant disponible que si vous êtes :
-une administration ;
-un établissement public ;
-un organisme privé chargé d’une mission de service public.</p>
-<h2 id=4-conditions-dutilisation>4. Conditions d&rsquo;utilisation</h2>
-<p>L&rsquo;utilisation de NC CONNECT est gratuite. Elle est soumise à la signature d&rsquo;une convention entre la Nouvelle-Calédonie et le fournisseur de service (hors phase de test, cf paragraphe 7).
-Cette convention précise les conditions et responsabilités de chaque partie.</p>
 <div class=row><div class="position-relative mx-auto col-lg-9">
 <div class="bg-primary overflow-hidden p-3 mt-5 shadow">
 <h4 class="text-white text-center">Read more</h4>
-<div class="d-flex justify-content-center"><a class="p-1 ml-3 d-inline-block text-white text-right" href=https://tom333.github.io/connect-docs/technique/ title="Informations techniques">Informations techniques<i class="fas fa-chevron-right p-1"></i></a>
+<div class="d-flex justify-content-center"><a class="p-1 mr-3 d-inline-block text-white" href=https://tom333.github.io/connect-docs/technique/flux/ title="Flux OpenID Connect"><i class="fas fa-chevron-left p-1"></i>Flux OpenID Connect</a>
+<a class="p-1 ml-3 d-inline-block text-white text-right" href=https://tom333.github.io/connect-docs/implementation/details_scopes/ title="Detail des scopes">Detail des scopes<i class="fas fa-chevron-right p-1"></i></a>
 </div>
 </div>
 </div></div>

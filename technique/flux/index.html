@@ -1,0 +1,150 @@
+<!doctype html><html><head>
+<meta charset=utf-8>
+<meta name=viewport content="width=device-width,initial-scale=1,shrink-to-fit=no">
+<link rel=canonical href=http://example.org/technique/flux/>
+<title>
+Flux OpenID Connect | NC Connect - Documentation d'intégration
+</title>
+<link href=http://example.org/css/fontawesome.min.css rel=stylesheet>
+<link rel=stylesheet href=http://example.org/css/ace.min.css>
+</head>
+<body><nav class="navbar navbar-expand-lg navbar-dark bg-primary shadow sticky-top" id=navbarMain>
+<div class=container>
+<div>
+<a class=navbar-brand href=/>
+NC Connect - Documentation d'intégration
+</a>
+</div>
+</div>
+</nav>
+<div class=container-fluid>
+<div class=row>
+<div class="docs-sidenav order-0 col-12 col-md-3 col-lg-2 col-xl-2 position-sticky border-right"><nav class="navbar navbar-expand-md navbar-light pl-0">
+<button class="navbar-toggler navbar-toggler-right collapsed" type=button data-toggle=collapse data-target=#sidenav-left-collapse aria-controls=sidenav-left-collapse aria-expanded=false aria-label="Toggle navigation">
+<span class=navbar-toggler-icon></span>
+</button>
+<div class="collapse navbar-collapse align-items-start flex-column" id=sidenav-left-collapse>
+<form class="form-inline my-2 my-lg-0 searchbox">
+<input class="form-control mr-sm-2 w-100" data-search-input id=search-by type=text placeholder=Search>
+</form>
+<ul class="navbar-nav flex-column pt-3">
+<li data-nav-id=/technique/ class="nav-item my-1 parent haschildren">
+<a class="nav-link p-0" href=/technique/><h6>Informations techniques</h6></a>
+<ul class="list-unstyled ml-2">
+<li data-nav-id=/technique/expire_data/ class="nav-item my-1">
+<a href=/technique/expire_data/ class="nav-link p-0">
+Les données NC Connect qui expirent
+</a>
+</li>
+<li data-nav-id=/technique/implementations/ class="nav-item my-1">
+<a href=/technique/implementations/ class="nav-link p-0">
+Les implémentations OpenID Connect
+</a>
+</li>
+<li data-nav-id=/technique/flux/ class="nav-item my-1 active">
+<a href=/technique/flux/ class="nav-link p-0">
+Flux OpenID Connect
+</a>
+</li>
+</ul>
+</li>
+</ul>
+</div>
+</nav>
+</div>
+<div class="docs-toc large order-lg-2 order-md-0 order-xs-1 col-12 col-lg-2 col-xl-2 position-sticky border-left"><div class=docs-toc>
+<nav id=TableOfContents></nav>
+</div>
+</div>
+<div class="main col-12 order-1 col-md-9 col-lg-10 col-xl-8 py-3">
+<h1>Flux OpenID Connect</h1>
+<p>Le protocole OpenID Connect définit un flux standard sur des endpoints et un mécanisme de découverte (cf. la spécification OpenID Connect Discovery) pour qu’un fournisseur de service puisse obtenir les informations sur ces endpoints.</p>
+<p>Les endpoints fournis par NC Connect peuvent être obtenus à l’adresse :
+<a href=https://connect-dev.gouv.nc/.well-known/openid-configuration>https://connect-dev.gouv.nc/.well-known/openid-configuration</a></p>
+<p>Exemple avec le “authorization code flow”
+§3.1 Authentication using the Authorization Code Flow</p>
+<p>1/ Lorsque l’internaute clique sur le bouton d’authentification, l’application cliente du fournisseur de service interroge le endpoint authorize(cf. §3.1.2.1 Authentication Request) :</p>
+<p>URI
+<a href=https://connect-dev.gouv.nc/v2/oauth/authorize>https://connect-dev.gouv.nc/v2/oauth/authorize</a>
+Method
+GET
+Data
+scope=openid
+response_type={fonction du type demandé}
+client_id={client ID fourni en réponse à la demande d’intégration du service}
+redirect_uri={URL de redirection fournie lors de la demande d’intégration du service}
+Response
+Si l’utilisateur est authentifié dans NC Connect, redirection vers la redirect_uri, sinon redirection vers la mire d’authentification :
+<a href=https://connect-dev.gouv.nc/v2/login>https://connect-dev.gouv.nc/v2/login</a></p>
+<p>Cet endpoint accepte notamment le paramètre “prompt”. Par exemple, si la valeur est “login”, alors la page de login est systématiquement affichée, même si l’utilisateur est déjà connecté.
+2/ Au final, l’utilisateur est redirigé, avec un code d’autorisation, vers l’application du fournisseur de service via la redirect_uri (cf § 3.1.2.5. Successful Authentication Response).</p>
+<p>3/ L’application (backend) du fournisseur de service fait un appel vers le endpoint token de NC Connect avec le code d’autorisation reçu (cf § 3.1.3.1 Token Request).</p>
+<p>Il authentifie la requête avec son clientID et son client secret en fonction de la méthode d’authentification retenue (client_secret_basic vs. client_secret_post, cf. § 9 Client Authentication et § 2.3 OAuth 2.0 [RFC6749]) :</p>
+<p>Si le fournisseur de service utilise la méthode client_secret_basic :</p>
+<p>URI
+<a href=https://connect-dev.gouv.nc/v2/token>https://connect-dev.gouv.nc/v2/token</a>
+Method
+POST
+Data
+grant_type=authorization_code
+code={le code d’autorisation reçu}
+redirect_uri={URL de redirection fournie lors de la demande d’intégration du service}
+Header
+Authorization : Basic ClientID:client secret encodé en Base64
+Response
+Access Token et ID Token (JWT)</p>
+<p>Si le fournisseur de service utilise la méthode client_secret_post :</p>
+<p>URI
+<a href=https://connect-dev.gouv.nc/v2/token>https://connect-dev.gouv.nc/v2/token</a>
+Method
+POST
+Data
+grant_type=authorization_code
+code={le code d’autorisation reçu}
+redirect_uri={URL de redirection fournie lors de la demande d’intégration du service}
+client_id={client ID fourni en réponse à la demande d’intégration du service}
+client_secret={client secret fourni en réponse à la demande d’intégration du service}
+Response
+Access Token et ID Token (JWT)</p>
+<p>4/ Le fournisseur de service peut récupérer les informations de l’utilisateur connecté par appel au endpoint userinfo (cf § 5.3.1 UserInfo Request):</p>
+<p>URI
+<a href=https://connect-dev.gouv.nc/v2/userinfo>https://connect-dev.gouv.nc/v2/userinfo</a>
+Method
+GET
+Header
+&lsquo;Authorization: Bearer &lsquo;{+ Access Token}
+Response
+userinfo (exemple) :</p>
+<p>{
+&ldquo;iss&rdquo;: {Issuer Identifier},
+&ldquo;sub&rdquo;: {User PPID},
+&ldquo;login&rdquo;: {User login},
+&ldquo;info&rdquo;: {
+&ldquo;openid&rdquo;: {
+&ldquo;Email&rdquo;: {User mail address}
+}
+}
+}</p>
+<div class=row><div class="position-relative mx-auto col-lg-9">
+<div class="bg-primary overflow-hidden p-3 mt-5 shadow">
+<h4 class="text-white text-center">Read more</h4>
+<div class="d-flex justify-content-center"><a class="p-1 mr-3 d-inline-block text-white" href=/technique/implementations/ title="Les implémentations OpenID Connect"><i class="fas fa-chevron-left p-1"></i>Les implémentations OpenID Connect</a>
+<a class="p-1 ml-3 d-inline-block text-white text-right" href=/technique/expire_data/ title="Les données NC Connect qui expirent">Les données NC Connect qui expirent<i class="fas fa-chevron-right p-1"></i></a>
+</div>
+</div>
+</div></div>
+</div>
+</div>
+</div>
+<script src=http://example.org/lib/jquery.min.js></script>
+<script src=http://example.org/lib/popper.min.js></script>
+<script src=http://example.org/js/bootstrap.min.js></script>
+<script type=text/javascript src=/plugins/lunr.min.js></script>
+<script type=text/javascript src=/plugins/auto-complete.js></script>
+<link href=/plugins/auto-complete.css rel=stylesheet>
+<script type=text/javascript>var baseurl="http://example.org/"</script>
+<script type=text/javascript src=/plugins/search.js></script>
+<script type=text/javascript src=/plugins/clipboard.js></script>
+<script>new ClipboardJS('.btn')</script>
+</body>
+</html>
